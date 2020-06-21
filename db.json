@@ -1,0 +1,52 @@
+{
+  "articles": [
+    {
+      "title": "Json-serverをreactで使う",
+      "content": "## インストール\n\n```npm install json-server```\n\n## DBファイル作成\n\n同階層にdb.jsonを作成\n\n## 起動scriptの登録\n\npackage.jsonに追記\n\n```\"json-server\": \"json-server --port 3001 --watch db.json\"```\n\n## 記述例\n\n```javascript\n    fetchArticles(){\n        fetch(\"http://localhost:3001/articles\") // データを取得しに行く\n        .then( response => response.json() ) // json型のレスポンスをオブジェクトに変換する\n        .then( json => { // オブジェクトに変換したレスポンスを受け取り、\n        this.setState({ articles: json }) // Stateを更新する\n        this.setState({ targetArticles: json }) // Stateを更新する\n        })\n    }\n```",
+      "label": "react",
+      "id": 1
+    },
+    {
+      "title": "react+typescriptの例",
+      "content": "# クラスコンポーネントの場合\n最初にinterfaceで型指定を行う。\n\n```\ninterface Props {}\ninterface State {\n    articles: any,\n    targetArticles: any,\n    sortedArticles: any,\n    sortFlag: boolean,\n}\n```\n\n# 参考\nhttps://qiita.com/alfe_below/items/1cb81a6a03d8d6d73b27",
+      "label": "typescript",
+      "id": 2
+    },
+    {
+      "title": "クラスコンポーネントからfunctionコンポーネントへの書き換え（hooks）",
+      "content": "# クラス\n```\nclass Example extends React.Component {\n  constructor(props) {\n    super(props);\n    this.state = {\n      count: 0\n    };\n  }\n\n  render() {\n    return (\n      <div>\n        <p>You clicked {this.state.count} times</p>\n        <button onClick={() => this.setState({ count: this.state.count + 1 })}>\n          Click me\n        </button>\n      </div>\n    );\n  }\n}\n```\n\n# function\n```\nimport React, { useState } from 'react';\n\nfunction Example() {\n  // Declare a new state variable, which we'll call \"count\"\n  const [count, setCount] = useState(0);\n\n  return (\n    <div>\n      <p>You clicked {count} times</p>\n      <button onClick={() => setCount(count + 1)}>\n        Click me\n      </button>\n    </div>\n  );\n}\n```\n\n# 参考\nhttps://ja.reactjs.org/docs/hooks-state.html（公式）\nhttps://qiita.com/makishy/items/bb014073d6e494b1b35f（+TS）",
+      "label": "react",
+      "id": 3
+    },
+    {
+      "title": "componentWillmaountに代わるhooksの書き方",
+      "content": "# 結論\nuseEfecctを使う\n\n```\nuseEffect(() => {\n    fetchArticle();\n  }, []);\n\n```\n\n# 参考\nhttps://www.it-swarm.dev/ja/javascript/react%E3%83%95%E3%83%83%E3%82%AF%E3%81%A7componentwillmount%EF%BC%88%EF%BC%89%E3%82%92%E4%BD%BF%E7%94%A8%E3%81%99%E3%82%8B%E3%81%AB%E3%81%AF%EF%BC%9F/808156187/",
+      "label": "react",
+      "id": 4
+    },
+    {
+      "title": "hooksでrouterを使う（useParams）",
+      "content": "# 結論\nuseParamsを使う\n\n# 使い方\n\n```\nconst Show = () => {\n  const { id } = useParams();\n\n~以下省略~\n\n\n```\n\n# 参考\nhttps://qiita.com/ozaki25/items/bb0eb273611eebc603dd#useparams",
+      "label": "react-router",
+      "id": 6
+    },
+    {
+      "title": "マークダウンエディタを導入する",
+      "content": "# 準備\n使うnpmパッケージは以下\n```\nmarked\nhighlight.js\n```\n\n# 例\n\n```javascript\n\nimport marked from \"marked\";\nimport highlight from 'highlight.js';\nimport 'highlightjs/styles/docco.css';\n\n\nmarked.setOptions({\n  // code要素にdefaultで付くlangage-を削除\n  langPrefix: '',\n  // highlightjsを使用したハイライト処理を追加\n  highlight: function(code, lang) {\n    return highlight.highlightAuto(code, [lang]).value\n  }\n});\n\n<div id=\"body\">\n          <span dangerouslySetInnerHTML={{ __html: marked(markdown) }} />\n </div>\n```\n\n# 参考\n（↓simple-markdown-editorは編集時の初期値保持のやり方がわからなかったので使わなかった）\n\nhttps://qiita.com/t_okkan/items/0a3318f90ee6c4468f82#%E3%83%9E%E3%83%BC%E3%82%AF%E3%83%80%E3%82%A6%E3%83%B3%E8%A1%A8%E8%A8%98%E3%82%92html%E3%81%AB%E5%A4%89%E6%8F%9B%E3%81%99%E3%82%8B\n\n（↓highlight.js）\n\nhttps://madogiwa0124.hatenablog.com/entry/2019/01/03/203334",
+      "label": "react",
+      "id": 7
+    },
+    {
+      "title": "filterメソッド使ったらlintエラーが出た件",
+      "content": "# 結論\nFilterメソッド使ってたらreturn 一行の時は\n{}いらんらしい\nこのlintエラー：Expected an assignment or function call and instead saw an expression\n\n# 参考\nhttps://stackoverflow.com/questions/45573277/react-expected-an-assignment-or-function-call-and-instead-saw-an-expression",
+      "label": "react",
+      "id": 8
+    },
+    {
+      "title": "FramerMotion+react-routerでページ遷移時にアニメーション",
+      "content": "# 準備\n```\nnpm install framer-motion\n\n```\n# コード\n\n```javascript\n//ルート\n      <AnimatePresence exitBeforeEnter>\n        <Switch>\n          <Route exact path=\"/\" component={About} />\n          <Route path=\"/blog\" component={BlogIndex} />\n          <Route path=\"/new\" component={New} />\n          <Route path=\"/show/:id\" component={Show} />\n          <Route path=\"/works\" component={Works} />\n        </Switch>\n      </AnimatePresence>\n\n//使う時\n<Item whileHover={{ scale: 1.2 }} transition={{ type: 'tween', duration: 0.2 }}>\n  <Link to=\"/\">ABOUT</Link>\n</Item>\n\n//styled-componentの時はこれ\nconst Item = styled(motion.li)`\n  margin-left: 24px;\n  border-style: none;\n  color: #333;\n`;\n\n//ページ遷移時のアニメーション。returnするDOMをmotion.divで囲む\nconst pageTransition = { duration: 1 };\n\nconst pageVariants = {\n  in: { opacity: 1 },\n  out: { opacity: 0},\n};\n<motion.div initial=\"out\" animate=\"in\" exit=\"out\" variants={pageVariants} transition={pageTransition}>\n\n\n```\n\n# 参考\nhttps://pagepro.co/blog/how-to-use-framer-motion-in-react-project-with-typescript-and-styledcomponents/\n\nhttps://dev.to/darthknoppix/page-transitions-in-react-router-with-framer-motion-4nml",
+      "label": "react-router",
+      "id": 9
+    }
+  ]
+}
