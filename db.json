@@ -8,13 +8,13 @@
     },
     {
       "title": "react+typescriptの例",
-      "content": "# クラスコンポーネントの場合\n最初にinterfaceで型指定を行う。\n\n```\ninterface Props {}\ninterface State {\n    articles: any,\n    targetArticles: any,\n    sortedArticles: any,\n    sortFlag: boolean,\n}\n```\n\n# 参考\nhttps://qiita.com/alfe_below/items/1cb81a6a03d8d6d73b27",
+      "content": "# クラスコンポーネントの場合\n最初にinterfaceで型指定を行う。\n\n```typescript\ninterface Props {}\ninterface State {\n    articles: any,\n    targetArticles: any,\n    sortedArticles: any,\n    sortFlag: boolean,\n}\n```\n\n# 参考\nhttps://qiita.com/alfe_below/items/1cb81a6a03d8d6d73b27",
       "label": "typescript",
       "id": 2
     },
     {
       "title": "クラスコンポーネントからfunctionコンポーネントへの書き換え（hooks）",
-      "content": "# クラス\n```\nclass Example extends React.Component {\n  constructor(props) {\n    super(props);\n    this.state = {\n      count: 0\n    };\n  }\n\n  render() {\n    return (\n      <div>\n        <p>You clicked {this.state.count} times</p>\n        <button onClick={() => this.setState({ count: this.state.count + 1 })}>\n          Click me\n        </button>\n      </div>\n    );\n  }\n}\n```\n\n# function\n```\nimport React, { useState } from 'react';\n\nfunction Example() {\n  // Declare a new state variable, which we'll call \"count\"\n  const [count, setCount] = useState(0);\n\n  return (\n    <div>\n      <p>You clicked {count} times</p>\n      <button onClick={() => setCount(count + 1)}>\n        Click me\n      </button>\n    </div>\n  );\n}\n```\n\n# 参考\nhttps://ja.reactjs.org/docs/hooks-state.html（公式）\nhttps://qiita.com/makishy/items/bb014073d6e494b1b35f（+TS）",
+      "content": "# クラスコンポーネント\n```javascript\nclass Example extends React.Component {\n  constructor(props) {\n    super(props);\n    this.state = {\n      count: 0\n    };\n  }\n\n  render() {\n    return (\n      <div>\n        <p>You clicked {this.state.count} times</p>\n        <button onClick={() => this.setState({ count: this.state.count + 1 })}>\n          Click me\n        </button>\n      </div>\n    );\n  }\n}\n```\n\n# functionコンポーネント\n```javascript\nimport React, { useState } from 'react';\n\nfunction Example() {\n  // Declare a new state variable, which we'll call \"count\"\n  const [count, setCount] = useState(0);\n\n  return (\n    <div>\n      <p>You clicked {count} times</p>\n      <button onClick={() => setCount(count + 1)}>\n        Click me\n      </button>\n    </div>\n  );\n}\n```\n\n# 参考\nhttps://ja.reactjs.org/docs/hooks-state.html（公式）\nhttps://qiita.com/makishy/items/bb014073d6e494b1b35f（+TS）",
       "label": "react",
       "id": 3
     },
@@ -26,7 +26,7 @@
     },
     {
       "title": "hooksでrouterを使う（useParams）",
-      "content": "# 結論\nuseParamsを使う\n\n# 使い方\n\n```\nconst Show = () => {\n  const { id } = useParams();\n\n~以下省略~\n\n\n```\n\n# 参考\nhttps://qiita.com/ozaki25/items/bb0eb273611eebc603dd#useparams",
+      "content": "# 結論\nuseParamsを使う\n\n# 使い方\n\n```javascript\nconst Show = () => {\n  const { id } = useParams();\n\n~以下省略~\n\n\n```\n\n# 参考\nhttps://qiita.com/ozaki25/items/bb0eb273611eebc603dd#useparams",
       "label": "react-router",
       "id": 6
     },
@@ -47,6 +47,18 @@
       "content": "# 準備\n```\nnpm install framer-motion\n\n```\n# コード\n\n```javascript\n//ルート\n      <AnimatePresence exitBeforeEnter>\n        <Switch>\n          <Route exact path=\"/\" component={About} />\n          <Route path=\"/blog\" component={BlogIndex} />\n          <Route path=\"/new\" component={New} />\n          <Route path=\"/show/:id\" component={Show} />\n          <Route path=\"/works\" component={Works} />\n        </Switch>\n      </AnimatePresence>\n\n//使う時\n<Item whileHover={{ scale: 1.2 }} transition={{ type: 'tween', duration: 0.2 }}>\n  <Link to=\"/\">ABOUT</Link>\n</Item>\n\n//styled-componentの時はこれ\nconst Item = styled(motion.li)`\n  margin-left: 24px;\n  border-style: none;\n  color: #333;\n`;\n\n//ページ遷移時のアニメーション。returnするDOMをmotion.divで囲む\nconst pageTransition = { duration: 1 };\n\nconst pageVariants = {\n  in: { opacity: 1 },\n  out: { opacity: 0},\n};\n<motion.div initial=\"out\" animate=\"in\" exit=\"out\" variants={pageVariants} transition={pageTransition}>\n\n\n```\n\n# 参考\nhttps://pagepro.co/blog/how-to-use-framer-motion-in-react-project-with-typescript-and-styledcomponents/\n\nhttps://dev.to/darthknoppix/page-transitions-in-react-router-with-framer-motion-4nml",
       "label": "react-router",
       "id": 9
+    },
+    {
+      "title": "useEffectの正しい書き方",
+      "content": "# 何が起きたか\nuseEffectの外でDBをfetchする関数を定義し、それをuseEffectで呼び出したらrender前にデータを取得できなかった\n\n# どうしたら治ったか\nuseEffectの内部にfetchする関数を書いた\n\n```javascript\n  useEffect(() => {\n    const fetchArticle = () => {\n      let myId = Number(id);\n      fetch(\"http://localhost:3001/articles\" + myId ) // データを取得しに行く\n      .then( response => response.json() ) // json型のレスポンスをオブジェクトに変換する\n      .then( json => { // オブジェクトに変換したレスポンスを受け取り、\n      setArticle( json ) // Stateを更新する\n      setInputTitle( json.title ) // Stateを更新する\n      setInputLabel( json.label ) // Stateを更新する\n      setMarkdown( json.content ) // Stateを更新する\n      })\n    }\n    fetchArticle();\n  }, []);\n```\n\n# 参考\nhttps://qiita.com/keiya01/items/fc5c725fed1ec53c24c5",
+      "label": "react",
+      "id": 10
+    },
+    {
+      "title": "json-serverをネット上に公開",
+      "content": "# やり方\ndb.jsonをgithabに公開\n終わり。\n\n# 参考\nhttps://www.xlsoft.com/jp/blog/blog/2019/08/20/post-7139/\n",
+      "label": "react",
+      "id": 11
     }
   ]
 }
